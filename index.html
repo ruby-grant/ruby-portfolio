@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruby Grant | Brand Strategist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #151515;
+            --white: #ffffff;
+            --gray: #999999;
+            --light-gray: #1a1a1a;
+            --border: #333333;
+        }
+
+        @font-face {
+            font-family: 'Uncut Sans';
+            src: url('./fonts/UncutSans-Regular.woff2') format('woff2'),
+                 url('./fonts/UncutSans-Regular.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Uncut Sans';
+            src: url('./fonts/UncutSans-Light.woff2') format('woff2'),
+                 url('./fonts/UncutSans-Light.woff') format('woff');
+            font-weight: 300;
+            font-style: normal;
+        }
+        
+        @font-face {
+            font-family: 'Uncut Sans';
+            src: url('./fonts/UncutSans-Medium.woff2') format('woff2'),
+                 url('./fonts/UncutSans-Medium.woff') format('woff');
+            font-weight: 500;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Uncut Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--white);
+            background: var(--black);
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: transparent;
+            z-index: 1000;
+            padding: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .nav-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            color: var(--gray);
+            font-weight: 300;
+            line-height: 1.4;
+            min-width: 120px;
+        }
+
+        .nav-left .time {
+            color: var(--white);
+            font-weight: 300;
+        }
+
+        .nav-left .location {
+            color: var(--gray);
+            font-weight: 300;
+        }
+
+        .nav-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            padding: 0 3rem;
+        }
+
+        .nav-center .intro {
+            color: var(--gray);
+            font-weight: 300;
+            font-size: 0.75rem;
+            max-width: 300px;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        .logo {
+            display: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 300;
+            font-size: 0.75rem;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 8rem 3rem 6rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-intro {
+            display: none;
+        }
+
+        .hero-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            max-width: 600px;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--gray);
+            margin-bottom: 0;
+            max-width: 500px;
+        }
+
+        /* Large Name at Bottom */
+        .hero-name {
+            position: absolute;
+            bottom: 4rem;
+            left: 3rem;
+            right: 3rem;
+            font-family: 'Uncut Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: clamp(6rem, 15vw, 12rem);
+            font-weight: 400;
+            line-height: 0.9;
+            color: var(--white);
+            letter-spacing: -0.05em;
+            pointer-events: none;
+            white-space: nowrap;
+            overflow: visible;
+        }
+
+        /* Main Content - Endless Scroll */
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 3rem 6rem;
+        }
+
+        /* Infinite Scroll Container */
+        .infinite-scroll {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+        }
+
+        .scroll-content {
+            min-height: 200vh;
+        }
+
+        /* Portfolio Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 4rem 3rem;
+            margin-bottom: 6rem;
+            scroll-snap-align: start;
+        }
+
+        .portfolio-item {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .portfolio-item:hover .portfolio-image {
+            opacity: 0.8;
+        }
+
+        .portfolio-image {
+            width: 100%;
+            height: 250px;
+            background: var(--light-gray);
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: var(--gray);
+            border: 1px solid var(--border);
+        }
+
+        .portfolio-content h3 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+
+        .portfolio-content p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--gray);
+        }
+
+        /* About Section */
+        .about {
+            border-top: 1px solid var(--border);
+            padding-top: 4rem;
+            margin-bottom: 6rem;
+        }
+
+        .about h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            color: var(--white);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .about-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--gray);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .about-details {
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .about-details .label {
+            color: var(--white);
+            font-weight: 500;
+            display: inline-block;
+            width: 120px;
+        }
+
+        .about-details .value {
+            color: var(--gray);
+        }
+
+        .about-details div {
+            margin-bottom: 0.8rem;
+        }
+
+        /* Contact Section */
+        .contact {
+            border-top: 1px solid var(--border);
+            padding-top: 4rem;
+        }
+
+        .contact h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            letter-spacing: -0.02em;
+            color: var(--white);
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .contact-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: var(--gray);
+        }
+
+        .contact-info {
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        .contact-info .label {
+            color: var(--white);
+            font-weight: 500;
+            display: inline-block;
+            width: 80px;
+        }
+
+        .contact-info .value {
+            color: var(--gray);
+        }
+
+        .contact-info div {
+            margin-bottom: 0.8rem;
+        }
+
+        .contact-info a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            color: var(--white);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .mobile-menu span {
+            width: 20px;
+            height: 1px;
+            background: var(--white);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .nav-container,
+            .hero,
+            .main {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-details .label {
+                width: 100px;
+            }
+
+            .contact-info .label {
+                width: 70px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container,
+            .hero,
+            .main {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .portfolio-grid {
+                gap: 2.5rem;
+            }
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-left">
+                <span class="time" id="current-time">12:34 PM</span>
+                <span class="location">New York, NY</span>
+            </div>
+            <div class="nav-center">
+                <div class="intro">Hi there! I'm a freelance brand strategist from New York with a love for helping businesses find their authentic voice. I'm currently working with clients & collaborating with agencies worldwide.</div>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#contact">Get in Touch</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <!-- Main content space if needed -->
+        </div>
+        <div class="hero-name">Ruby Grant</div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Portfolio Grid -->
+        <section id="work" class="portfolio-grid">
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-image">Mindful Living Co.</div>
+                <div class="portfolio-content">
+                    <h3>Mindful Living Co.</h3>
+                    <p>A wellness brand focused on sustainable living practices, helping customers create mindful spaces in their everyday lives.</p>
+                </div>
+            </div>
+
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-image">Artisan Coffee Roasters</div>
+                <div class="portfolio-content">
+                    <h3>Artisan Coffee Roasters</h3>
+                    <p>Complete brand strategy and identity for a specialty coffee company committed to ethical sourcing and community connection.</p>
+                </div>
+            </div>
+
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-image">Luna Skincare</div>
+                <div class="portfolio-content">
+                    <h3>Luna Skincare</h3>
+                    <p>Clean beauty brand positioning and messaging framework, emphasizing natural ingredients and self-care rituals.</p>
+                </div>
+            </div>
+
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-image">Urban Gardens</div>
+                <div class="portfolio-content">
+                    <h3>Urban Gardens</h3>
+                    <p>Brand development for a city-based gardening service that brings green spaces to urban environments.</p>
+                </div>
+            </div>
+
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-image">Craft & Co.</div>
+                <div class="portfolio-content">
+                    <h3>Craft & Co.</h3>
+                    <p>Artisan marketplace brand strategy, connecting independent makers with conscious consumers worldwide.</p>
+                </div>
+            </div>
+
+            <div class="portfolio-item fade-in">
+                <div class="portfolio-image">Nourish Kitchen</div>
+                <div class="portfolio-content">
+                    <h3>Nourish Kitchen</h3>
+                    <p>Farm-to-table restaurant brand identity emphasizing seasonal ingredients and community gathering spaces.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about fade-in">
+            <h2>About</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>With over 7 years of experience in brand strategy and creative direction, I help businesses discover their authentic voice and translate it into compelling narratives that drive meaningful connections.</p>
+                    <p>My approach combines strategic thinking with creative insight, ensuring every brand story I craft is not only distinctive but also purposeful and results-driven.</p>
+                </div>
+                <div class="about-details">
+                    <div>
+                        <span class="label">Services</span>
+                        <span class="value">Brand Strategy, Visual Identity, Creative Direction, Brand Guidelines, Market Positioning</span>
+                    </div>
+                    <div>
+                        <span class="label">Industries</span>
+                        <span class="value">Wellness, Food & Beverage, Retail, Technology, Professional Services</span>
+                    </div>
+                    <div>
+                        <span class="label">Based in</span>
+                        <span class="value">New York, NY</span>
+                    </div>
+                    <div>
+                        <span class="label">Working</span>
+                        <span class="value">Globally</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact fade-in">
+            <h2>Contact</h2>
+            <div class="contact-content">
+                <div class="contact-text">
+                    <p>I'm always interested in hearing about new projects and opportunities. Whether you're a startup looking to establish your brand or an established company ready for a refresh, I'd love to discuss how we can work together.</p>
+                </div>
+                <div class="contact-info">
+                    <div>
+                        <span class="label">Email</span>
+                        <span class="value"><a href="mailto:hello@rubygrant.com">hello@rubygrant.com</a></span>
+                    </div>
+                    <div>
+                        <span class="label">Phone</span>
+                        <span class="value"><a href="tel:+15551234567">+1 (555) 123-4567</a></span>
+                    </div>
+                    <div>
+                        <span class="label">LinkedIn</span>
+                        <span class="value"><a href="https://linkedin.com/in/rubygrant" target="_blank">linkedin.com/in/rubygrant</a></span>
+                    </div>
+                    <div>
+                        <span class="label">Instagram</span>
+                        <span class="value"><a href="https://instagram.com/rubygrant" target="_blank">@rubygrant</a></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Update time in navigation
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: 'numeric', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+        
+        // Update time immediately and then every minute
+        updateTime();
+        setInterval(updateTime, 60000);
+
+        // Infinite scroll effect
+        function createInfiniteScroll() {
+            const portfolioGrid = document.querySelector('.portfolio-grid');
+            const portfolioItems = Array.from(portfolioGrid.children);
+            
+            // Clone items for infinite effect
+            portfolioItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                portfolioGrid.appendChild(clone);
+            });
+        }
+
+        // Initialize infinite scroll
+        window.addEventListener('load', createInfiniteScroll);
+
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const offsetTop = target.offsetTop - 120;
+                    window.scrollTo({
+                        top: offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Portfolio item interactions
+        document.querySelectorAll('.portfolio-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const title = this.querySelector('h3').textContent;
+                console.log(`Clicked on: ${title}`);
+                // Here you could navigate to a case study page or open a modal
+            });
+        });
+    </script>
+</body>
+</html>
